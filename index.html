@@ -701,16 +701,21 @@ async function _initAuth(){
 function _updateAuthUI(){
   const overlay = document.getElementById('auth-overlay');
   if(!overlay) return;
-  const wasVisible = overlay.style.display !== 'none';
-  overlay.style.display = _sbUser ? 'none' : 'flex';
+  if(_sbUser){
+    overlay.style.display = 'none';
+    document.body.style.overflow = '';
+    // 로그인 후 강제 초기화
+    window.scrollTo(0,0);
+    document.documentElement.scrollTop = 0;
+    document.querySelector('.app-wrap')?.scrollTo(0,0);
+    document.querySelectorAll('.page').forEach(p=>{ p.scrollTop=0; });
+    setTimeout(()=>{ window.scrollTo(0,0); },100);
+  } else {
+    overlay.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+  }
   const emailEl = document.getElementById('auth-user-email');
   if(emailEl) emailEl.textContent = _sbUser ? _sbUser.email : '';
-  // 로그인 후 맨 위로 스크롤
-  if(_sbUser && wasVisible){
-    window.scrollTo(0,0);
-    document.querySelector('.app-wrap')?.scrollTo(0,0);
-    document.querySelectorAll('.page').forEach(p=>p.scrollTop=0);
-  }
 }
 
 async function _authSignIn(){

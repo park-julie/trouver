@@ -7,6 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700;900&family=Hepta+Slab:wght@800&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -644,6 +645,19 @@ body::-webkit-scrollbar{display:none}
   </div>
 </div>
 
+<!-- AUTH OVERLAY -->
+<div id="auth-overlay" style="display:flex;position:fixed;inset:0;background:#fff;z-index:1000;flex-direction:column;align-items:center;justify-content:center;padding:32px">
+  <div style="width:100%;max-width:360px">
+    <div style="font-family:'Poppins',sans-serif;font-weight:700;font-size:32px;color:var(--navy);margin-bottom:6px">Trouver</div>
+    <div style="font-size:14px;color:var(--gray3);margin-bottom:36px">로그인하고 나만의 컬렉션을 저장해요</div>
+    <input id="auth-email" type="email" placeholder="이메일" style="width:100%;padding:13px 14px;border:1.5px solid var(--gray2);border-radius:var(--radius-sm);font-size:14px;margin-bottom:10px;outline:none;font-family:'Poppins',sans-serif;color:var(--text)"/>
+    <input id="auth-password" type="password" placeholder="비밀번호 (6자 이상)" style="width:100%;padding:13px 14px;border:1.5px solid var(--gray2);border-radius:var(--radius-sm);font-size:14px;margin-bottom:16px;outline:none;font-family:'Poppins',sans-serif;color:var(--text)"/>
+    <div id="auth-error" style="font-size:12px;color:#C05050;margin-bottom:14px;min-height:16px"></div>
+    <button onclick="_authSignIn()" style="width:100%;padding:14px;background:var(--navy);color:#fff;border:none;border-radius:var(--radius-sm);font-family:'Poppins',sans-serif;font-size:15px;font-weight:600;cursor:pointer;margin-bottom:10px">로그인</button>
+    <button onclick="_authSignUp()" style="width:100%;padding:14px;background:none;color:var(--navy);border:1.5px solid var(--gray2);border-radius:var(--radius-sm);font-family:'Poppins',sans-serif;font-size:15px;font-weight:500;cursor:pointer">회원가입</button>
+  </div>
+</div>
+
 <!-- API KEY SETTINGS MODAL -->
 <div class="settings-overlay" id="settings-overlay" onclick="closeApiKeyModal(event)">
   <div class="settings-box" onclick="event.stopPropagation()">
@@ -658,10 +672,96 @@ body::-webkit-scrollbar{display:none}
       <button class="settings-cancel-btn" onclick="closeApiKeyModal()">취소</button>
     </div>
     <div class="settings-status" id="settings-status"></div>
+    <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--gray2)">
+      <div id="auth-user-email" style="font-size:12px;color:var(--gray3);margin-bottom:8px"></div>
+      <button onclick="_authSignOut()" style="width:100%;padding:10px;background:none;color:#C05050;border:1.5px solid #C05050;border-radius:var(--radius-sm);font-family:'Poppins',sans-serif;font-size:13px;font-weight:500;cursor:pointer">로그아웃</button>
+    </div>
   </div>
 </div>
 
 <script>
+// ── SUPABASE AUTH ─────────────────────────────
+const _sb = supabase.createClient(
+  'https://wuvmxjjztihtlddjjflw.supabase.co',
+  'sb_publishable_QlGIjH_ijXDdUUOj7Q0Cgg_iiKLmy9V'
+);
+let _sbUser = null;
+
+async function _initAuth(){
+  const { data: { session } } = await _sb.auth.getSession();
+  _sbUser = session?.user || null;
+  _updateAuthUI();
+  _sb.auth.onAuthStateChange((event, session) => {
+    _sbUser = session?.user || null;
+    _updateAuthUI();
+    if(_sbUser) _loadFromSupabase();
+  });
+}
+
+function _updateAuthUI(){
+  const overlay = document.getElementById('auth-overlay');
+  if(!overlay) return;
+  overlay.style.display = _sbUser ? 'none' : 'flex';
+  const emailEl = document.getElementById('auth-user-email');
+  if(emailEl) emailEl.textContent = _sbUser ? _sbUser.email : '';
+}
+
+async function _authSignIn(){
+  const email = document.getElementById('auth-email').value.trim();
+  const password = document.getElementById('auth-password').value;
+  const errEl = document.getElementById('auth-error');
+  errEl.textContent = '';
+  const { error } = await _sb.auth.signInWithPassword({ email, password });
+  if(error) errEl.textContent = '이메일 또는 비밀번호를 확인해주세요';
+}
+
+async function _authSignUp(){
+  const email = document.getElementById('auth-email').value.trim();
+  const password = document.getElementById('auth-password').value;
+  const errEl = document.getElementById('auth-error');
+  errEl.textContent = '';
+  if(password.length < 6){ errEl.textContent = '비밀번호는 6자 이상이어야 해요'; return; }
+  const { error } = await _sb.auth.signUp({ email, password });
+  if(error) errEl.textContent = error.message;
+  else errEl.style.color='#2E9E6B', errEl.textContent = '가입 완료! 이메일 확인 후 로그인해주세요';
+}
+
+async function _authSignOut(){
+  await _sb.auth.signOut();
+}
+
+async function _saveToSupabase(items){
+  if(!_sbUser) return;
+  const rows = items.map(item => ({
+    id: String(item.id),
+    user_id: _sbUser.id,
+    data: item
+  }));
+  await _sb.from('items').upsert(rows, { onConflict: 'id' });
+}
+
+async function _deleteFromSupabase(itemId){
+  if(!_sbUser) return;
+  await _sb.from('items').delete().eq('id', String(itemId)).eq('user_id', _sbUser.id);
+}
+
+async function _loadFromSupabase(){
+  if(!_sbUser) return;
+  const { data, error } = await _sb.from('items').select('*').eq('user_id', _sbUser.id).order('created_at', { ascending: false });
+  if(error || !data || !data.length) return;
+  // 기존 유저 아이템 제거 후 Supabase 데이터로 교체
+  const sampleItems = ITEMS.filter(i => !i._isUser);
+  const sbItems = data.map(r => ({ ...r.data, _isUser: true }));
+  ITEMS.splice(0, ITEMS.length, ...sbItems, ...sampleItems);
+  // IndexedDB에 이미지 저장
+  _idb.save(sbItems);
+  // UI 갱신
+  const statEl = document.getElementById('stat-num');
+  if(statEl) statEl.textContent = ITEMS.length;
+  updateHeroCard(); renderRecent(); updatePillCounts(); renderBars(); renderCloud(); renderBubbles();
+  if(document.getElementById('page-stash')?.classList.contains('active')) renderStash();
+}
+
 const ITEMS=[
   {id:1,  type:'img',  fav:true,  title:'미니멀 인테리어 아이디어',      date:'오늘',    tags:['인테리어','패션']},
   {id:2,  type:'img',  fav:false, title:'그라디언트 배경 컬렉션',        date:'오늘',    tags:['그래픽디자인','UI/UX','패션']},
@@ -2114,6 +2214,8 @@ function saveUserItems(){
     const meta=userItems.map(i=>{const{_imgData,_imgDataList,...r}=i;return r;});
     localStorage.setItem('trouver_user_items',JSON.stringify(meta));
   }catch(e){console.warn('메타 저장 실패:',e);}
+  // Supabase에도 저장 (로그인 시)
+  _saveToSupabase(userItems);
 }
 
 async function loadUserItems(){
@@ -2406,6 +2508,7 @@ function clearNewBadge(){
 }
 
 // INIT
+_initAuth();
 loadUserItems().then(()=>{
   (function(){ const el=document.getElementById('stat-num'); if(el) el.textContent=ITEMS.length; })();
   updateHeroCard();

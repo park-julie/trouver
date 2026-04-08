@@ -701,9 +701,16 @@ async function _initAuth(){
 function _updateAuthUI(){
   const overlay = document.getElementById('auth-overlay');
   if(!overlay) return;
+  const wasVisible = overlay.style.display !== 'none';
   overlay.style.display = _sbUser ? 'none' : 'flex';
   const emailEl = document.getElementById('auth-user-email');
   if(emailEl) emailEl.textContent = _sbUser ? _sbUser.email : '';
+  // 로그인 후 맨 위로 스크롤
+  if(_sbUser && wasVisible){
+    window.scrollTo(0,0);
+    document.querySelector('.app-wrap')?.scrollTo(0,0);
+    document.querySelectorAll('.page').forEach(p=>p.scrollTop=0);
+  }
 }
 
 async function _authSignIn(){

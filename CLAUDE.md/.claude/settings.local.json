@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//Users/julie/Library/Application Support/Claude/local-agent-mode-sessions/skills-plugin/ee4efdf0-8382-4887-b185-666a2506488e/e1c687f1-1c91-4bcb-b6de-d844800caa80/skills/docx/**)",
+      "Bash(pandoc --track-changes=all \"/Users/julie/Desktop/Trouver_PRD.docx\" -o /tmp/trouver_prd.md)",
+      "Read(//tmp/**)",
+      "Read(//private/tmp/**)",
+      "Bash(python3 -c \":*)"
+    ]
+  }
+}

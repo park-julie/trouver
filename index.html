@@ -683,6 +683,7 @@ body::-webkit-scrollbar{display:none}
 // 로그인 화면이 뜰 때 배경 스크롤 방지
 document.body.style.overflow = 'hidden';
 document.body.style.position = 'fixed';
+document.body.style.top = '0';
 document.body.style.width = '100%';
 
 // ── SUPABASE AUTH ─────────────────────────────
@@ -718,6 +719,7 @@ function _updateAuthUI(){
     overlay.style.display = 'flex';
     document.body.style.overflow = 'hidden';
     document.body.style.position = 'fixed';
+    document.body.style.top = '0';
     document.body.style.width = '100%';
   }
   const emailEl = document.getElementById('auth-user-email');

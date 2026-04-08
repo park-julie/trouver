@@ -680,6 +680,11 @@ body::-webkit-scrollbar{display:none}
 </div>
 
 <script>
+// 로그인 화면이 뜰 때 배경 스크롤 방지
+document.body.style.overflow = 'hidden';
+document.body.style.position = 'fixed';
+document.body.style.width = '100%';
+
 // ── SUPABASE AUTH ─────────────────────────────
 const _sb = supabase.createClient(
   'https://wuvmxjjztihtlddjjflw.supabase.co',
@@ -704,15 +709,16 @@ function _updateAuthUI(){
   if(_sbUser){
     overlay.style.display = 'none';
     document.body.style.overflow = '';
-    // 로그인 후 강제 초기화
+    document.body.style.position = '';
+    document.body.style.width = '';
     window.scrollTo(0,0);
     document.documentElement.scrollTop = 0;
-    document.querySelector('.app-wrap')?.scrollTo(0,0);
     document.querySelectorAll('.page').forEach(p=>{ p.scrollTop=0; });
-    setTimeout(()=>{ window.scrollTo(0,0); },100);
   } else {
     overlay.style.display = 'flex';
     document.body.style.overflow = 'hidden';
+    document.body.style.position = 'fixed';
+    document.body.style.width = '100%';
   }
   const emailEl = document.getElementById('auth-user-email');
   if(emailEl) emailEl.textContent = _sbUser ? _sbUser.email : '';

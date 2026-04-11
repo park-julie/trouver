@@ -1625,6 +1625,7 @@ function setPeriod(btn,p){
 function openModal(){
   document.getElementById('modal').classList.add('open');
   document.getElementById('add-form').style.display='none';
+  document.querySelectorAll('.action-tile').forEach(t=>t.classList.remove('selected'));
 }
 function closeModal(e){
   document.getElementById('modal').classList.remove('open');

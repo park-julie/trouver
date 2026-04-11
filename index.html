@@ -2425,8 +2425,10 @@ const ALL_RADII_MAIN = [56,52,46,44,40,38,36];
 const ALL_RADII_DECO = [30,12,26,11,22]; // 크고 작은 대비 강조
 // All 뷰 12개 초기 위치
 const ALL_INIT_POS = [
-  [0.20,0.40],[0.72,0.52],[0.86,0.18],[0.14,0.72],[0.48,0.14],[0.50,0.84],[0.88,0.80],
-  [0.38,0.27],[0.62,0.32],[0.30,0.66],[0.66,0.68],[0.50,0.50],
+  // 라벨 버블 7개
+  [0.20,0.42],[0.70,0.50],[0.84,0.16],[0.14,0.70],[0.46,0.12],[0.52,0.82],[0.90,0.78],
+  // 장식 버블 6개 (틈새 배치)
+  [0.36,0.26],[0.62,0.30],[0.28,0.62],[0.68,0.66],[0.54,0.50],[0.80,0.42],
 ];
 // 필터 뷰: 버블 수별 초기 위치
 const FILTER_INIT = {
@@ -2516,23 +2518,28 @@ function renderBubbles(filter){
   const allSorted=[...BUBBLE_DATA].sort((a,b)=>b.count-a.count);
   let bbs;
   if(filter==='all'){
-    const mainItems=allSorted.slice(0,7);
-    const decoItems=allSorted.slice(7,12);
-    const mainRadii=_calcRadii(mainItems,34,58); // 라벨 있는 버블: 34~58px
-    const decoRadii=_calcRadii(decoItems.length?decoItems:[{count:1}],12,26); // 장식 버블: 12~26px
+    const mainItems=allSorted.slice(0,7); // 라벨 카테고리 버블: 최대 7개
+    const mainRadii=_calcRadii(mainItems,36,58);
+    // 장식 버블: 다양한 크기의 작은 원 6개 (카테고리 무관, 순수 장식)
+    const decoSizes=[22,10,17,8,14,11];
+    const decoColors=['image','link','memo','image','memo','link'].map(t=>TYPE_COLOR[t]);
+    const decoStrokes=['image','link','memo','image','memo','link'].map(t=>TYPE_STROKE[t]);
     const items=[
       ...mainItems.map((d,i)=>({d,r:mainRadii[i],show:true})),
-      ...decoItems.map((d,i)=>({d,r:decoRadii[i],show:false})),
+      ...decoSizes.map((r,i)=>({d:{name:'',count:0,type:'image'},r,show:false,_decoColor:decoColors[i],_decoStroke:decoStrokes[i]})),
     ];
-    bbs=items.map(({d,r,show},idx)=>{
+    bbs=items.map((item,idx)=>{
+      const {d,r,show}=item;
       const [px,py]=ALL_INIT_POS[idx]||[Math.random(),Math.random()];
-      return{..._makeBb(d,r,W*px,H*py,W,H),show};
+      const bb={..._makeBb(d,r,W*px,H*py,W,H),show};
+      if(item._decoColor){ bb.color=item._decoColor; bb.stroke=item._decoStroke; }
+      return bb;
     });
     container.innerHTML=bbs.map((b,i)=>`
       <div class="bubble" id="bbf${i}" style="
         width:${b.r*2}px;height:${b.r*2}px;
         background:${b.color};border:1.5px solid ${b.stroke};
-        box-shadow:0 4px 18px ${b.stroke};
+        box-shadow:0 3px 12px ${b.stroke};
         left:${b.x-b.r}px;top:${b.y-b.r}px;">
         ${b.show?(()=>{const[fn,nn]=_bFont(b.r);return`<span class="bubble-name" style="font-size:${fn}px">${b.name}</span><span class="bubble-num" style="font-size:${nn}px">${b.count}</span>`;})():''}
       </div>`).join('');

@@ -2180,6 +2180,12 @@ async function saveItem(){
     updateHomeAfterSave();
     switchTabByName('stash');
     renderStash();
+    // 렌더링 완료 후 stash 페이지 최상단으로 스크롤
+    requestAnimationFrame(()=>{
+      const p=document.getElementById('page-stash');
+      if(p){ p.scrollTop=0; }
+      window.scrollTo(0,0);
+    });
   }catch(e){
     if(loadingEl) loadingEl.classList.remove('show');
     console.error(e);

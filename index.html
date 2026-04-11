@@ -2017,6 +2017,12 @@ async function _fetchYoutubeMetadata(ytId){
     const d=await r.json();
     if(d.title) return {duration:null,title:d.title,description:null};
   }catch(e){}
+  // 3-2차: noembed (또 다른 oEmbed)
+  try{
+    const r=await _fetchWithTimeout(`https://noembed.com/embed?url=https://www.youtube.com/watch?v=${ytId}`,5000);
+    const d=await r.json();
+    if(d.title) return {duration:null,title:d.title,description:null};
+  }catch(e){}
   // 4차: allorigins HTML 파싱
   try{
     const r=await _fetchWithTimeout(`https://api.allorigins.win/raw?url=${encodeURIComponent('https://www.youtube.com/watch?v='+ytId)}`,8000);
@@ -2061,13 +2067,11 @@ async function classifyLink(url, apiKey){
     // YouTube: 메타데이터 먼저 받아서 실제 제목+설명으로 Claude 호출
     const meta=await metaPromise;
     metaPromise=Promise.resolve(meta);
-    if(meta.ytTitle||meta.ytDescription){
-      const context=`영상 제목: ${meta.ytTitle||'(알 수 없음)'}\n영상 설명: ${meta.ytDescription||'(없음)'}`;
-      claudePromise=callClaude([{role:'user',content:`다음 YouTube 영상 정보를 바탕으로 분석해주세요.\n${context}\n\n${_AI_PROMPT}`}],apiKey);
-    } else {
-      // 메타데이터 없음 — 빈 결과 반환
-      claudePromise=Promise.resolve(JSON.stringify({title:'YouTube 영상',tags:['유튜브','영상'],summary:'영상 정보를 불러올 수 없어요.',purpose:'나중에 다시 보려고',emoji:'▶️'}));
-    }
+    const parts=[`URL: ${url}`];
+    if(meta.ytTitle) parts.push(`영상 제목: ${meta.ytTitle}`);
+    if(meta.ytDescription) parts.push(`영상 설명: ${meta.ytDescription}`);
+    const context=parts.join('\n');
+    claudePromise=callClaude([{role:'user',content:`다음 YouTube 영상 정보를 바탕으로 분석해주세요.\n${context}\n\n${_AI_PROMPT}`}],apiKey);
   } else {
     // 일반 링크: 메타데이터가 있으면 함께 전달
     const meta=await metaPromise;

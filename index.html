@@ -2599,10 +2599,12 @@ function runAnalysis(btn){
     ITEMS.forEach(i=>typeCount[i.type]++);
     const topType=['img','link','memo'].sort((a,b)=>typeCount[b]-typeCount[a])[0];
     const typeLabel={img:'이미지',link:'링크',memo:'메모'}[topType];
-    // 영문이면 medium(500), 한글이면 semi-bold(600)
-    const _ib=t=>/^[A-Za-z0-9\s\/\-_.&,!?()]+$/.test(t.trim())
-      ?`<b style="font-weight:500">${t}</b>`
-      :`<b>${t}</b>`;
+    // 영문이면 medium(500), 한글이면 semi-bold(600) + 한글의 / → ·
+    const _ib=t=>{
+      const isEng=/^[A-Za-z0-9\s\/\-_.&,!?()]+$/.test(t.trim());
+      const display=isEng?t:t.replace(/\//g,'·');
+      return isEng?`<b style="font-weight:500">${display}</b>`:`<b>${display}</b>`;
+    };
     const insights=[
       `최근 저장 콘텐츠에서 ${_ib(topTags[0])} 관련 관심이 가장 높게 나타납니다.`,
       `${_ib(typeLabel)} 형식으로 저장하는 비율이 가장 높아 시각적 레퍼런스 수집 패턴이 강합니다.`,

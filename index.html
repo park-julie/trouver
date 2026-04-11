@@ -2380,21 +2380,43 @@ function downloadHeroCard() {
   });
 }
 
-// BUBBLE FIELD — 12개 대분류 (상위 7개는 텍스트, 나머지 5개는 형태만)
-const BUBBLE_DATA = [
-  {name:'Design',  count:1275, type:'image'},  // image 3개
-  {name:'Hair',    count:126,  type:'memo'},   // memo  5개
-  {name:'Shop',    count:120,  type:'link'},   // link  4개
-  {name:'Travel',  count:45,   type:'link'},
-  {name:'Fashion', count:38,   type:'image'},
-  {name:'Food',    count:13,   type:'memo'},
-  {name:'AI',      count:13,   type:'link'},
-  {name:'Music',   count:9,    type:'memo'},
-  {name:'Tech',    count:7,    type:'link'},
-  {name:'Photo',   count:6,    type:'image'},
-  {name:'Health',  count:5,    type:'memo'},
-  {name:'Books',   count:4,    type:'memo'},
-];
+// BUBBLE FIELD — topic 카테고리 기반 동적 집계
+// topic → bubble color type 매핑
+const TOPIC_TYPE = {
+  'AI':'link', 'Tech':'image', 'Business':'link', 'Finance':'link',
+  'Science':'image', 'Art & Design':'image', 'Entertainment':'memo',
+  'Music':'memo', 'Food':'memo', 'Travel':'link', 'Fashion':'memo',
+  'Health':'memo', 'Lifestyle':'memo', 'Education':'image', 'Etc.':'memo'
+};
+// 샘플 아이템 태그 → topic 매핑
+const TAG_TOPIC_MAP = {
+  'AI/머신러닝':'AI','프로그래밍':'Tech','UI/UX':'Art & Design',
+  '그래픽디자인':'Art & Design','인테리어':'Art & Design','마케팅':'Business',
+  '패션':'Fashion','국내여행':'Travel','해외여행':'Travel',
+  '카페/디저트':'Food','한식':'Food','음식':'Food',
+  '영양/식단':'Health','운동/헬스':'Health',
+  '자기계발':'Lifestyle','생산성/습관':'Lifestyle',
+  '독서/책':'Education','독서':'Education',
+};
+function _buildBubbleData(){
+  const counts={};
+  ITEMS.forEach(item=>{
+    let topic = item._topic; // 사용자 저장 아이템
+    if(!topic && item.tags){
+      // 샘플 아이템: 태그로 topic 유추
+      for(const tag of (item.tags||[])){
+        if(TAG_TOPIC_MAP[tag]){ topic=TAG_TOPIC_MAP[tag]; break; }
+      }
+    }
+    topic = topic||'Etc.';
+    counts[topic]=(counts[topic]||0)+1;
+  });
+  return Object.entries(counts)
+    .filter(([,c])=>c>0)
+    .sort((a,b)=>b[1]-a[1])
+    .map(([name,count])=>({name,count,type:TOPIC_TYPE[name]||'memo'}));
+}
+let BUBBLE_DATA = _buildBubbleData();
 const TYPE_COLOR  = {image:'#C8DBFF', link:'#C5F1D8', memo:'#FEDDDD'};
 const TYPE_STROKE = {image:'rgba(100,140,255,0.18)', link:'rgba(0,168,107,0.16)', memo:'rgba(220,100,80,0.13)'};
 let bubbleRAF = null;
@@ -2477,6 +2499,7 @@ function _bFont(r){
 }
 function renderBubbles(filter){
   filter=filter||'all';
+  BUBBLE_DATA=_buildBubbleData(); // 항상 최신 topic 집계 반영
   const container=document.getElementById('bubble-field');
   if(!container) return;
   if(bubbleRAF){cancelAnimationFrame(bubbleRAF);bubbleRAF=null;}

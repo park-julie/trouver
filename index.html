@@ -313,8 +313,8 @@ body::-webkit-scrollbar{display:none}
 .action-tile:hover{background:var(--gray2)}
 .action-tile.selected{border-color:var(--navy);}
 .action-tile[data-type="image"].selected{border-color:#75A4FF;}
-.action-tile[data-type="link"].selected{border-color:#FFA2A2;}
-.action-tile[data-type="memo"].selected{border-color:#79CFAB;}
+.action-tile[data-type="link"].selected{border-color:#79CFAB;}
+.action-tile[data-type="memo"].selected{border-color:#FFA2A2;}
 .action-tile-icon{width:44px;height:44px;display:flex;align-items:center;justify-content:center;font-size:22px}
 .action-tile-label{font-size:12px;font-weight:500;color:var(--navy)}
 
@@ -628,17 +628,17 @@ body::-webkit-scrollbar{display:none}
     <div class="modal-handle"></div>
     <div class="modal-title">무엇을 저장할까요?</div>
     <div class="action-grid">
-      <button class="action-tile" data-type="image" onclick="showAddForm('image')" style="background:#E3EDFF">
+      <button class="action-tile" data-type="image" onclick="showAddForm('image')" style="background:#EAF1FF">
         <div class="action-tile-icon" style="background:none"><svg width="28" height="28" fill="none" stroke="#75A4FF" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>
         <span class="action-tile-label">이미지</span>
       </button>
-      <button class="action-tile" data-type="link" onclick="showAddForm('link')" style="background:#FFECEC">
-        <div class="action-tile-icon" style="background:none"><svg width="28" height="28" fill="none" stroke="#FFA2A2" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></div>
+      <button class="action-tile" data-type="link" onclick="showAddForm('link')" style="background:#EBF8F2">
+        <div class="action-tile-icon" style="background:none"><svg width="28" height="28" fill="none" stroke="#79CFAB" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></div>
         <span class="action-tile-label">링크</span>
       </button>
-      <button class="action-tile" data-type="memo" onclick="showAddForm('memo')" style="background:#E4F5EE">
-        <div class="action-tile-icon" style="background:none"><svg width="28" height="28" fill="none" stroke="#79CFAB" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div>
-        <span class="action-tile-label">메모</span>
+      <button class="action-tile" data-type="memo" onclick="showAddForm('memo')" style="background:#FFF1F1">
+        <div class="action-tile-icon" style="background:none"><svg width="28" height="28" fill="none" stroke="#FFA2A2" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div>
+        <span class="action-tile-label">노트</span>
       </button>
     </div>
     <div id="add-form" style="margin-top:16px;display:none"></div>

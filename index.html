@@ -2521,7 +2521,7 @@ function renderBubbles(filter){
     const mainItems=allSorted.slice(0,7); // 라벨 카테고리 버블: 최대 7개
     const mainRadii=_calcRadii(mainItems,36,58);
     // 장식 버블: 다양한 크기의 작은 원 6개 (카테고리 무관, 순수 장식)
-    const decoSizes=[28,18,24,28,24,18]; // 3가지 사이즈만 사용
+    const decoSizes=[28,20,14,28,20,14]; // 3가지 사이즈만 사용
     const decoColors=['image','link','memo','memo','image','link'].map(t=>TYPE_COLOR[t]);
     const decoStrokes=['image','link','memo','memo','image','link'].map(t=>TYPE_STROKE[t]);
     const items=[

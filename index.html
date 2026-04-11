@@ -1334,7 +1334,7 @@ function openDetail(id, dir){
       ${imgCount>1?renderThumbCounter(imgCount,0):''}
     </div>
     <div class="detail-body">
-      <div class="detail-meta">${item._topic?`<span style="color:${item.type==='img'?'#2962CA':item.type==='link'?'#1A885D':'#D85642'};font-weight:600;">${item._topic}</span>  |  `:''}${_relDate(item)} · ${purpose}</div>
+      <div class="detail-meta">${_relDate(item)} · ${purpose}</div>
       <div class="detail-title-row">
         <div class="detail-title" id="detail-title-text">${item.title}</div>
         <button class="detail-edit-btn" onclick="enterDetailEdit()" title="수정">

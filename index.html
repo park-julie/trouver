@@ -1699,7 +1699,12 @@ function showAddForm(type){
         <div class="img-multi-grid" id="img-multi-grid"></div>
       </div>`;
   } else if(type==='link'){
-    inputHtml=`<input type="url" id="link-url-input" placeholder="URL을 입력하세요 (https://...)" style="width:100%;border:1.5px solid #E4E0D8;border-radius:10px;padding:12px;font-size:16px;font-family:inherit;outline:none;color:#1A1714;box-sizing:border-box;margin-bottom:12px;" onfocus="this.style.borderColor='#112C41'" onblur="this.style.borderColor='#E4E0D8';onLinkInputDone(this)" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">`;
+    inputHtml=`<div style="position:relative;margin-bottom:12px;">
+      <input type="url" id="link-url-input" placeholder="URL을 입력하세요" style="width:100%;border:1.5px solid #E4E0D8;border-radius:10px;padding:12px 40px 12px 12px;font-size:16px;font-family:inherit;outline:none;color:#1A1714;box-sizing:border-box;" onfocus="this.style.borderColor='#112C41';document.getElementById('link-clear-btn').style.opacity=this.value?'1':'0'" onblur="this.style.borderColor='#E4E0D8';onLinkInputDone(this)" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}" oninput="document.getElementById('link-clear-btn').style.opacity=this.value?'1':'0'">
+      <button id="link-clear-btn" type="button" onclick="document.getElementById('link-url-input').value='';document.getElementById('link-url-input').focus();document.getElementById('link-clear-btn').style.opacity='0';" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;padding:4px;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .15s;color:rgba(17,44,65,0.35);">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>`;
   } else {
     inputHtml=`<textarea id="memo-text-input" placeholder="아이디어나 메모를 입력하세요" style="width:100%;border:1.5px solid #E4E0D8;border-radius:10px;padding:12px;font-size:16px;font-family:inherit;resize:none;height:90px;outline:none;color:#1A1714;box-sizing:border-box;margin-bottom:12px;" onfocus="this.style.borderColor='#112C41'" onblur="this.style.borderColor='#E4E0D8';onMemoInputDone(this)"></textarea>`;
   }

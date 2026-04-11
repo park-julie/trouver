@@ -2427,8 +2427,8 @@ const ALL_RADII_DECO = [30,12,26,11,22]; // 크고 작은 대비 강조
 const ALL_INIT_POS = [
   // 라벨 버블 7개
   [0.20,0.42],[0.70,0.50],[0.84,0.16],[0.14,0.70],[0.46,0.12],[0.52,0.82],[0.90,0.78],
-  // 장식 버블 3개
-  [0.38,0.28],[0.64,0.66],[0.78,0.44],
+  // 장식 버블 6개
+  [0.36,0.26],[0.62,0.30],[0.28,0.62],[0.68,0.66],[0.54,0.50],[0.80,0.42],
 ];
 // 필터 뷰: 버블 수별 초기 위치
 const FILTER_INIT = {
@@ -2521,9 +2521,9 @@ function renderBubbles(filter){
     const mainItems=allSorted.slice(0,7); // 라벨 카테고리 버블: 최대 7개
     const mainRadii=_calcRadii(mainItems,36,58);
     // 장식 버블: 다양한 크기의 작은 원 6개 (카테고리 무관, 순수 장식)
-    const decoSizes=[28,18,24];
-    const decoColors=['image','link','memo'].map(t=>TYPE_COLOR[t]);
-    const decoStrokes=['image','link','memo'].map(t=>TYPE_STROKE[t]);
+    const decoSizes=[28,18,24,28,24,18]; // 3가지 사이즈만 사용
+    const decoColors=['image','link','memo','memo','image','link'].map(t=>TYPE_COLOR[t]);
+    const decoStrokes=['image','link','memo','memo','image','link'].map(t=>TYPE_STROKE[t]);
     const items=[
       ...mainItems.map((d,i)=>({d,r:mainRadii[i],show:true})),
       ...decoSizes.map((r,i)=>({d:{name:'',count:0,type:'image'},r,show:false,_decoColor:decoColors[i],_decoStroke:decoStrokes[i]})),

@@ -1629,6 +1629,10 @@ function openModal(){
 }
 function closeModal(e){
   document.getElementById('modal').classList.remove('open');
+  document.querySelectorAll('.action-tile').forEach(t=>t.classList.remove('selected'));
+  const f=document.getElementById('add-form');
+  f.style.display='none';
+  f.innerHTML='';
 }
 let _pendingAIResult=null;
 let _pendingImageData=null;

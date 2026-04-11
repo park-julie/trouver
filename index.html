@@ -2412,7 +2412,7 @@ function _buildBubbleData(){
     counts[topic]=(counts[topic]||0)+1;
   });
   return Object.entries(counts)
-    .filter(([,c])=>c>0)
+    .filter(([name,c])=>c>0 && name!=='Etc.')
     .sort((a,b)=>b[1]-a[1])
     .map(([name,count])=>({name,count,type:TOPIC_TYPE[name]||'memo'}));
 }

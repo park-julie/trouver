@@ -1653,14 +1653,14 @@ function showAddForm(type){
   const aiBox= type==='image'
     ?`<div style="padding:2px 0 0;">
         <div style="font-size:11px;font-weight:600;color:var(--tan);display:flex;align-items:center;gap:4px;margin-bottom:7px;"><svg width="11" height="11" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l2.5 7.5L22 12l-7.5 2.5L12 22l-2.5-7.5L2 12l7.5-2.5L12 2z"/></svg> AI 자동 분류</div>
-        <div id="ai-classify-result" style="min-height:22px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;">
-          <span style="font-size:12px;color:var(--gray3);">이미지를 선택하면 태그가 생성돼요</span>
+        <div id="ai-classify-result" style="min-height:40px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;justify-content:center;">
+          <span style="font-size:14px;color:var(--gray3);text-align:center;width:100%;">이미지를 선택하면 태그가 생성돼요</span>
         </div>
       </div>`
     :`<div style="padding:2px 0 0;">
         <div style="font-size:11px;font-weight:600;color:var(--tan);display:flex;align-items:center;gap:4px;margin-bottom:7px;"><svg width="11" height="11" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l2.5 7.5L22 12l-7.5 2.5L12 22l-2.5-7.5L2 12l7.5-2.5L12 2z"/></svg> AI 자동 분류</div>
-        <div id="ai-classify-result" style="min-height:22px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;">
-          <span style="font-size:12px;color:var(--gray3);">${type==='link'?'URL을 입력하면':'메모를 입력하면'} AI가 자동으로 분류해요</span>
+        <div id="ai-classify-result" style="min-height:40px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;justify-content:center;">
+          <span style="font-size:14px;color:var(--gray3);text-align:center;width:100%;">${type==='link'?'URL을 입력하면':'메모를 입력하면'} AI가 자동으로 분류해요</span>
         </div>
       </div>`;
   let inputHtml='';
@@ -1757,7 +1757,7 @@ function onImageSelected(input){
       resultEl.innerHTML='<span style="font-size:12px;color:var(--gray3);">API 키를 설정하면 태그가 자동 생성돼요</span>';
       return;
     }
-    resultEl.innerHTML=`<span style="font-size:12px;color:var(--gray3);display:flex;align-items:center;gap:6px;"><span style="width:13px;height:13px;border:2px solid var(--gray2);border-top-color:var(--tan);border-radius:50%;display:inline-block;animation:spin .7s linear infinite;flex-shrink:0;"></span>분류 중...</span>`;
+    resultEl.innerHTML=`<span style="font-size:14px;color:var(--gray3);display:flex;align-items:center;justify-content:center;gap:8px;width:100%;"><span style="width:18px;height:18px;border:2.5px solid var(--gray2);border-top-color:var(--tan);border-radius:50%;display:inline-block;animation:spin .7s linear infinite;flex-shrink:0;"></span>분류 중...</span>`;
     try{
       const result=await classifyImage(files[0],apiKey);
       _pendingAIResult=result;
@@ -1802,7 +1802,7 @@ async function onLinkInputDone(input){
   }
   _lastClassifiedUrl=url;
   _pendingAIResult=null;
-  resultEl.innerHTML=`<span style="font-size:12px;color:var(--gray3);display:flex;align-items:center;gap:6px;"><span style="width:13px;height:13px;border:2px solid var(--gray2);border-top-color:var(--tan);border-radius:50%;display:inline-block;animation:spin .7s linear infinite;flex-shrink:0;"></span>분류 중...</span>`;
+  resultEl.innerHTML=`<span style="font-size:14px;color:var(--gray3);display:flex;align-items:center;justify-content:center;gap:8px;width:100%;"><span style="width:18px;height:18px;border:2.5px solid var(--gray2);border-top-color:var(--tan);border-radius:50%;display:inline-block;animation:spin .7s linear infinite;flex-shrink:0;"></span>분류 중...</span>`;
   try{
     const result=await classifyLink(url,apiKey);
     _pendingAIResult=result;
@@ -1839,7 +1839,7 @@ async function onMemoInputDone(input){
   }
   _lastClassifiedMemo=text;
   _pendingAIResult=null;
-  resultEl.innerHTML=`<span style="font-size:12px;color:var(--gray3);display:flex;align-items:center;gap:6px;"><span style="width:13px;height:13px;border:2px solid var(--gray2);border-top-color:var(--tan);border-radius:50%;display:inline-block;animation:spin .7s linear infinite;flex-shrink:0;"></span>분류 중...</span>`;
+  resultEl.innerHTML=`<span style="font-size:14px;color:var(--gray3);display:flex;align-items:center;justify-content:center;gap:8px;width:100%;"><span style="width:18px;height:18px;border:2.5px solid var(--gray2);border-top-color:var(--tan);border-radius:50%;display:inline-block;animation:spin .7s linear infinite;flex-shrink:0;"></span>분류 중...</span>`;
   try{
     const result=await classifyMemo(text,apiKey);
     _pendingAIResult=result;

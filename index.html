@@ -1765,7 +1765,7 @@ function onImageSelected(input){
       const chipStyle=typeTagStyle['img'];
       resultEl.style.justifyContent='flex-start';
       resultEl.innerHTML=tags.map(t=>
-        `<span style="${chipStyle};display:inline-flex;align-items:center;height:44px;padding:0 16px;font-size:13px;font-weight:500;">${t}</span>`
+        `<span style="${chipStyle};display:inline-flex;align-items:center;padding:4px 11px;font-size:12px;font-weight:500;">${t}</span>`
       ).join('');
       const purposeRow=document.getElementById('purpose-select-row');
       if(purposeRow){
@@ -1811,7 +1811,7 @@ async function onLinkInputDone(input){
     const chipStyle=typeTagStyle['link'];
     resultEl.style.justifyContent='flex-start';
     resultEl.innerHTML=tags.map(t=>
-      `<span style="${chipStyle};display:inline-flex;align-items:center;height:44px;padding:0 16px;font-size:13px;font-weight:500;">${t}</span>`
+      `<span style="${chipStyle};display:inline-flex;align-items:center;padding:4px 11px;font-size:12px;font-weight:500;">${t}</span>`
     ).join('');
     // 저장 용도 pre-select
     if(result.purpose){
@@ -1849,7 +1849,7 @@ async function onMemoInputDone(input){
     const chipStyle=typeTagStyle['memo'];
     resultEl.style.justifyContent='flex-start';
     resultEl.innerHTML=tags.map(t=>
-      `<span style="${chipStyle};display:inline-flex;align-items:center;height:44px;padding:0 16px;font-size:13px;font-weight:500;">${t}</span>`
+      `<span style="${chipStyle};display:inline-flex;align-items:center;padding:4px 11px;font-size:12px;font-weight:500;">${t}</span>`
     ).join('');
     if(result.purpose){
       document.querySelectorAll('.form-purpose-chip').forEach(c=>{
